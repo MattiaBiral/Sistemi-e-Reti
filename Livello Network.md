@@ -89,10 +89,10 @@ E' necessario un meccanismo di numerazione dei pacchetti ad albero, ma è comple
 
 Utilizzando la trasmissione broadcast delle LAN **risolve gli indirizzi MAC dei rispettivi IPv4**
 
-1. Viene inviato in **broadcast di livello 2** (MAC FF-FF-FF-FF-FF-FF) un pacchetto contenente l'indirizzo IPv4 di cui si cerca il corrispondente MAC -> **ARP Request**
+1. Viene inviato in **broadcast di livello 2** (destinatario `FF-FF-FF-FF-FF-FF`) un pacchetto contenente l'indirizzo IPv4 di cui si cerca il corrispondente MAC -> **ARP Request**
 2. Tutti gli host leggono il pacchetto, quello interessato **risponde con il proprio indirizzo MAC** -> **ARP Reply**
 
-### Dynamic Host Configuration Protocol version 4
+## Dynamic Host Configuration Protocol version 4
 
 - Parametri obbligatori:
   - **Indirizzo IP** assegnato
