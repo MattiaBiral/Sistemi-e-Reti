@@ -16,15 +16,16 @@ Indirizzi a **32bit**, 4 byte nel **formato decimale 9.35.225.45**
 ### Header
 
 ![IPv4 Header](./img/ipv4_header.png)
-- **HLEN**: Header Length, varia a seconda delle options
+- **HLEN**: Header Length, varia a seconda delle options, indica il numero di 32bit words che compongono l'header
 - **Service Type**: Servizio desiderato in termini di velocità e affidabilità
 - **Total Length**: HLEN + Payload Length
-- **Identification** e **Fragment Offset**: identificatore del datagram (Livello 4) e posizione del frammento
+- **Identification**: utilizzato per riconoscere frammenti dello stesso datagram
+- **Fragment Offset**: posizione del frammento, in unità di 8 byte
   - **Don't Fragment**
   - **More Fragments**
 - **Time To Live** (TTL): Numero di router che può attraversare prima di essere scartato
 - **Protocol**: Transported Protocol
-- Options: funzionalità aggiuntive
+- Options: funzionalità aggiuntive, ci sono se HLEN > 5
 
 ### Classes
 
@@ -220,7 +221,7 @@ Neighbor Discovery utilizza messaggi ICMPv6:
 1. **Neighbor Solicitation** inviato da un host che necessita di conoscere l'indirizzo MAC del corrispondente IPv6
 2. **Neighbor Advertisement** in risposta ad un Neighbor Discovery dall'host con quell'indirizzo IPv6 
 
-### Autoconfigurazione IPv6
+### StateLess Address AutoConfiguration
 
 1. **Router Solicitation** con destinatario all routers
 2. **Router Advertisement** (inviati anche periodicamente dal router): fornisce il **default-gateway** (il router stesso) e il **prefisso di rete Global Unique** e esplicita se e come deve essere cercato un server DHCPv6
@@ -234,7 +235,7 @@ L'host richiede un indirizzo IPv6 che viene memorizzato in aggiunta a quelli aut
 
 # Internet Control Message Protocol
 
-IP è un protocollo best-effort, ma la suite TCP/IP fornisce messaggi informativi e di errore, il cui scopo non è di renderlo affidabile, ma di fornire feedback su problemi e strumenti di dignostica
+IP è un protocollo best-effort, ma la suite TCP/IP fornisce messaggi informativi e di errore, il cui scopo non è di renderlo affidabile, ma di fornire feedback sui problemi e strumenti di dignostica
 
 ## Header
 
@@ -292,3 +293,27 @@ Routing Table
 | 0.0.0.0/0       | G0/3      |
 
 L'ultima entrata è la **Default Route**, in questo caso il pacchetto verrà inviato attraverso G0/3
+
+### Supernetting
+
+Per rendere le tabelle di routing più corte e quindi il processo di esplorazione più veloce è a volte possibile raggruppare reti con lo stesso **Next Hop** (o stessa interfaccia) in un'unica entrata  
+Es:  
+![Supernetting Example](./img/supernetting_example.png)
+Routing Table di R1  
+| Route             | Interfaccia/Next Hop  |
+|-------------------|-----------------------|
+| 192.168.0.0/16    | 192.168.10.254        |
+| 192.168.1.0/24    | G1/0                  |
+| 192.128.2.0/24    | G2/0                  |
+| 192.168.10.254/24 | S0/0                  |
+
+In questo caso è stato possibile raggruppare `192.168.3.0/24` e `192.168.4.0/24` in `192.168.0.0/16`
+
+Possibili casi di pacchetti da PC1
+- Verso PC3 o PC4:  
+L'unico match è con `192.168.0.0/16` poichè applicando la netmask `/16` (`255.255.0.0`) a `192.168.3.1` o `192.168.4.1` si ottiene `192.168.0.0` -> match
+- Verso PC2:
+  - Un match è con `192.168.0.0/16` (come precedentemente descritto, con `192.168.2.1`)
+  - Un altro match è con `192.168.2.0/24` perchè applicando la netmask `/24` (`255.255.255.0`) a `192.168.2.1` si ottiene `192.168.2.0`, ed è best match perchè `24` > `16`
+
+In entrambi i casi i pacchetti verranno inviati correttamente
