@@ -219,7 +219,7 @@ Indirizzo privato, valido soltanto nelle reti locali
 
 Neighbor Discovery utilizza messaggi ICMPv6:
 1. **Neighbor Solicitation** inviato da un host che necessita di conoscere l'indirizzo MAC del corrispondente IPv6
-2. **Neighbor Advertisement** in risposta ad un Neighbor Discovery dall'host con quell'indirizzo IPv6 
+2. **Neighbor Advertisement** in risposta ad un Neighbor Solicitation dall'host con quell'indirizzo IPv6 
 
 ### StateLess Address AutoConfiguration
 
