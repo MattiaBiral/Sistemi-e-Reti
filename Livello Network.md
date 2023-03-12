@@ -148,7 +148,7 @@ Indirizzi a **128bit**, **16 byte nel formato esadecimale `fe80:0000:0000:0000:0
 Connectionless  
 TTL -> hop count  
 **Subnetmask** -> **Classless Inter-Domain Routing** notation per la lunghezza del prefisso 
-Niente NAT, non c'è la necessità
+Niente NAT, non c'è la necessità  
 E' possibile assegnare più di un indirizzo (anche pubblico) ad una scheda di rete  
 L'header non ha più un campo options variabile, è però possibile concatenare più headers  
 Unifica Internet e Intranet in quanto ogni dispositivo ha un indirizzo pubblico  
@@ -190,7 +190,7 @@ Indirizzo privato, valido soltanto nelle reti locali
 - **Multicas Address**:  
 `ff00::/8` -> `1111 1111`
   - `ff01::1/128` All nodes
-  - `ff01::2/158` All routers
+  - `ff01::2/128` All routers
   - `ff02::/16` -> `1111 1111 0000 0010` Link Local Multicast
 - IPv4 embedded o mapped, deprecati, composti da 96bit fissi e dall'indirizzo IPv4
 - Tunneling 4in6, permette di trasmettere pacchetti IPv4 attraverso reti IPv6 only, codificando gli indirizzi, ad esempio `192.168.1.1/5` diventa `2002:c0a8:0101:5::1`
