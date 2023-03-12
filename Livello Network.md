@@ -66,13 +66,13 @@ Esempio: subnetting a maschera variabile per suddividere la rete `192.168.21.0/2
 4. da 4 host
 5. da 2 host
 
-| Hosts | Rete/CIDR notation | Mask | Primo ind. | Ultimo ind. | Broadcast |
-|---|---|---|---|---|---|
-| 126 | 192.168.21.0/25   | 255.255.255.128 | .1   | .126 | .127 |
-| 62  | 192.168.21.128/26 | 255.255.255.192 | .129 | .192 | .191 |
-| 30  | 192.168.21.192/27 | 255.255.255.224 | .193 | .222 | .223 |
-| 6   | 192.168.21.224/29 | 255.255.255.248 | .225 | .230 | .231 |
-| 2   | 192.168.21.232/30 | 255.255.255.252 | .233 | .234 | .235 |
+| Hosts | Rete/CIDR notation | Mask            | Primo ind. | Ultimo ind. | Broadcast |
+|-------|--------------------|-----------------|------------|-------------|-----------|
+| 126   | 192.168.21.0/25    | 255.255.255.128 | .1         | .126        | .127      |
+| 62    | 192.168.21.128/26  | 255.255.255.192 | .129       | .192        | .191      |
+| 30    | 192.168.21.192/27  | 255.255.255.224 | .193       | .222        | .223      |
+| 6     | 192.168.21.224/29  | 255.255.255.248 | .225       | .230        | .231      |
+| 2     | 192.168.21.232/30  | 255.255.255.252 | .233       | .234        | .235      |
 
 ### Frammentazione
 
@@ -94,11 +94,16 @@ Utilizzando la trasmissione broadcast delle LAN **risolve gli indirizzi MAC dei 
 
 ## Dynamic Host Configuration Protocol version 4
 
-- Parametri obbligatori:
-  - **Indirizzo IP** assegnato
-  - **Netmask**
-  - Indirizzo IP del **default-router**
-  - **Lease Time**, per quanto tempo il client può utilizzare l'indirizzo assegnato
+Parametri obbligatori:
+- **Indirizzo IP** assegnato
+- **Netmask**
+- Indirizzo IP del **default-router**
+- **Lease Time**, per quanto tempo il client può utilizzare l'indirizzo assegnato
+
+Permette tre tipi di allocazione:
+- Statica:
+- Automatica:
+- Dinamica:
 
 Richiesta di un indirizzo:
 1. Il client invia un messaggio **DHCPDISCOVER** destinato alla **porta 67 di UDP**, **in broadcast a livello 3** (sorgente `0.0.0.0`, destinatario `255.255.255.255`) **e a livello 2** (destinatario `FF-FF-FF-FF-FF-FF`)
@@ -113,6 +118,12 @@ Rinnovo di un indirizzo:
 2. Il server verifica le informazioni e invia un **DHCPACK**
 
 > RFC 2131, 2132
+
+### Automatic Private IP Addressing
+
+Se un host non riesce ad ottenere in indirizzo IP usando DHCP allora ne genera uno randomicamente tra `169.254.1.0/16` e `169.254.254.255/16`, poi invia un ARP request per trovare il MAC dell'indirizzo ip generato, se rimane senza risposta allora inizia ad utilizzarlo
+
+> RFC 3330
 
 ## Network Address Translation
 
@@ -202,7 +213,13 @@ Indirizzo privato, valido soltanto nelle reti locali
 5. 4 blocchi per il primo edificio
 6. ...
 
-## Autoconfigurazione IPv6
+## Neighbor Discovery Protocol
+
+Neighbor Discovery utilizza messaggi ICMPv6:
+1. **Neighbor Solicitation** inviato da un host che necessita di conoscere l'indirizzo MAC del corrispondente IPv6
+2. **Neighbor Advertisement** in risposta ad un Neighbor Discovery dall'host con quell'indirizzo IPv6 
+
+### Autoconfigurazione IPv6
 
 1. **Router Solicitation** con destinatario all routers
 2. **Router Advertisement** (inviati anche periodicamente dal router): fornisce il **default-gateway** (il router stesso) e il **prefisso di rete Global Unique** e esplicita se e come deve essere cercato un server DHCPv6
@@ -213,3 +230,64 @@ Indirizzo privato, valido soltanto nelle reti locali
 Il server DHCPv6 fornisce soltanto gli indirizzi dei server DNS (solitamente ce ne sono due: primary e secondary), time-server, ecc.
 - **Stateful**:  
 L'host richiede un indirizzo IPv6 che viene memorizzato in aggiunta a quelli autogenerati, questo indirizzo viene memorizzato dal server DHCPv6 che invia anche le informazioni fornite in modalità stateless
+
+# Internet Control Message Protocol
+
+IP è un protocollo best-effort, ma la suite TCP/IP fornisce messaggi informativi e di errore, il cui scopo non è di renderlo affidabile, ma di fornire feedback su problemi e strumenti di dignostica
+
+## Header
+
+![ICMP Header](./img/icmp_header.png)
+- **Type**: Error or Information
+- **Code**: Code or Information Type
+
+## Messaggi ICMP
+I messaggi ICMP possono essere di diversi tipi:
+- Host Reachability:  
+Testa la raggiungibilità di un host, tramite **ping** l'host invia un **echo request**, se il destinatario è raggiungibile ricevera da lui una **echo reply**
+- Destination or Service unreachable:  
+Utilizzato da host o gateway quando ricevono un pacchetto che non possono consegnare
+- **Time Exceeded**:  
+Inviato dai router quando il TTL o Hop Limit è `0`
+
+# Routing
+
+Il routing è il processo di identificazione del percorso migliore, route, verso una destinazione
+
+## Routing Table
+
+Tutti i dispositivi che operano a livello 3 dispongono di **tabelle di routing** per decidere a chi inoltrare il pacchetto perchè questo possa raggiungere la sua destinazione
+
+La tabella memorizza tre tipi di voci:
+- **Directly Connected Routes**:  
+Quando un'interfaccia viene configurata con un indirizzo ip e attivata viene aggiunta una di queste voci, ad esempio se a G0/0 viene assegnato l'indirizzo `192.168.15.254/24` il router aggiunge una voce `192.168.15.0/24` -> G0/0
+- **Remote Routes**:  
+Sono voci aggiunte manualmente da un amministratore di rete o automaticamente tramite un protocollo di routing dinamico, servono per intradare i pacchetti verso reti remote
+- Default Route
+
+### Best Match
+
+Il **Best Match** è l'entrata della routing table che corrisponde meglio all'indirizzo di destinazione  
+Es:  
+Destinatario `192.168.10.5`  
+Routing Table
+| Route           | Interface |
+|-----------------|-----------|
+| 192.168.0.0/16  | G0/1      |
+| 192.168.10.0/24 | G0/2      |
+
+La seconda entrata è detta Best Match
+
+### Last Resort o Default Route
+
+Solitamente nelle tabelle di routing si include un **Last Resort**, un indirizzo che fa sempre match, in modo che se non viene trovata una route migliore il router invia il pacchetto ad un altro router che potrebbe sapere dove instradarlo  
+Es:  
+Destinatario `192.168.7.2`  
+Routing Table  
+| Route           | Interface |
+|-----------------|-----------|
+| 192.168.5.0/24  | G0/1      |
+| 192.168.36.0/24 | G0/2      |
+| 0.0.0.0/0       | G0/3      |
+
+L'ultima entrata è la **Default Route**, in questo caso il pacchetto verrà inviato attraverso G0/3
