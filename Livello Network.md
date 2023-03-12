@@ -206,11 +206,12 @@ Indirizzo privato, valido soltanto nelle reti locali
 
 ### Best Practice
 
-1. 4 blocchi /56 per l'infrastruttura di rete
-2. 12 blocchi liberi
-3. 4 blocchi per le DMZ
-4. 12 blocchi liberi
-5. 4 blocchi per il primo edificio
+(Esempio con `2001:db8:1::/48`)
+1. 4 blocchi /56 per l'infrastruttura di rete (`2001:db8:1::/56` -> `2001:db8:1:300::/56`)
+2. 12 blocchi liberi (`2001:db8:1:400::/56` -> `2001:db8:1:f00::/56`)
+3. 4 blocchi per le DMZ (`2001:db8:1:1000::/56` -> `2001:db8:1:1300::/56`)
+4. 12 blocchi liberi (`2001:db8:1:1400::/56` -> `2001:db8:1:1f00::/56`)
+5. 4 blocchi per il primo edificio (`2001:db8:1:2000::/56` -> `2001:db8:1:2300::/56`)
 6. ...
 
 ## Neighbor Discovery Protocol
