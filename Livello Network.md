@@ -101,9 +101,9 @@ Parametri obbligatori:
 - **Lease Time**, per quanto tempo il client può utilizzare l'indirizzo assegnato
 
 Permette tre tipi di allocazione:
-- Statica:
-- Automatica:
-- Dinamica:
+- **Statica**: manuale, ad ogni MAC viene sempre assegnato lo stesso IP
+- **Automatica**: senza Lease Time
+- **Dinamica**: con Lease Time
 
 Richiesta di un indirizzo:
 1. Il client invia un messaggio **DHCPDISCOVER** destinato alla **porta 67 di UDP**, **in broadcast a livello 3** (sorgente `0.0.0.0`, destinatario `255.255.255.255`) **e a livello 2** (destinatario `FF-FF-FF-FF-FF-FF`)
