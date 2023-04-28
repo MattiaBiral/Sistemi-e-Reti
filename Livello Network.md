@@ -317,3 +317,145 @@ L'unico match è con `192.168.0.0/16` poichè applicando la netmask `/16` (`255.
   - Un altro match è con `192.168.2.0/24` perchè applicando la netmask `/24` (`255.255.255.0`) a `192.168.2.1` si ottiene `192.168.2.0`, ed è best match perchè `24` > `16`
 
 In entrambi i casi i pacchetti verranno inviati correttamente
+
+# Algoritmi di routing
+
+### Tipi di algoritmi:
+
+- **Non adattivi (routing statico)**:  
+Criteri fissi di instradamento
+  - Fixed directory routing
+    - Tabelle scritte a mano
+    - Tabelle fisse ottenute tramite algoritmi
+  - Flooding  
+  Pacchetti ripetuti su tutte le porte eccetto quella da cui sono ricevuti
+  - Age counter  
+  Hop limit
+  - Random Walk  
+  Pacchetti ritrasmessi in modo casuale su una delle linee disponibili
+  - Hot Potato  
+  Pacchetti ritrasmessi sulla linea con la coda più breve
+- **Adattivi (routing dinamico)**:  
+Tabelle di routing continuamente aggiornate
+  - Routing centralizzato
+  - Routing isolato
+  - Routing distribuito
+    - Distance vector
+    - Link state
+
+### Routing centralizzato
+
+Presenza di un Routing Control Center che calcola e distribuisce le tabelle  
+Genera elevato carico sulla rete in prossimità del RCC
+
+### Routing isolato
+
+Ogni nodo decide l'instradamento senza scambiare informazioni con gli altri nodi in modo simile al backward learning di switch/bridge
+
+### Routing distribuito
+
+Ogni router calcola le sue tabelle dialogando con gli altri router  
+Lo scambio di informazioni avviene tramite protocolli ausiliari di livello 3  
+Esistono due approcci principali:
+- **Distance vector**
+- **Link state**
+
+## Distance vector
+
+Noto anche come algoritmo di Bellman-Ford o Ford-Fulkerson  
+Ogni nodo quando modifica le proprie tabelle di routing invia ai nodi adiacenti un distance vector  
+Ogni nodo memorizza per ogni linea l'ultimo distance vector ricevuto  
+
+Un router ricalcola le sue tabelle se
+- cade una linea attiva
+- riceve un distance vector da un nodo adiacente diverso da quello memorizzato
+
+Se le tabelle risultano diverse da quelle precedenti invia ai nodi adiacenti un nuovo distance vector
+
+Invia gli aggiornamenti in limited-broadcast o in multicast anche periodicamente  
+Calcola il best-path con le informazioni ricevute  
+Soluzioni contro i routing-loop:
+- **Triggered-updates**: aggiornamenti forzati per la circolazione di notizie aggiornate
+- **Holddown-timer**
+- **Split-horizon**: non vengono mandati update su una destinazione sull'interfaccia da cui sono stati ricevuti
+- **Maximum-metric**: per evitare il count-to-infinity
+- **Route-poisoning + poison reverse**: quando una destinazione cade viene settata ad infinity con triggered update e i vicini rispondono con una ricevuta
+
+**Vantaggi**: molto semplice da implementare  
+**Svantaggi**: lenta convergenza e possibilità di innesco di loop
+
+## Link state
+
+Funzionamento:
+- Scopre le reti attive direttamente collegate su cui opera il protocollo
+- Tramite pacchetti di Hello scopre chi sono i vicini attivi, tali pacchetti continuano ad essere inviati per monitorare lo stato dei link e dei vicini
+- Construisce Link State Packet contenenti lo stato dei link direttamente collegati
+- Invia i LSP a tutti i vicini che li ritrasmettono
+- Memorizza i LSP ricevuti nel Link State Database in cui costruisce la topologia dell'area e calcola i best-path verso le destinazioni 
+
+**Vantaggi**: può gestire reti di grandi dimensioni, convergenza rapida, robusto, ogni nodo ha la mappa dell'intera rete  
+**Svantaggi**: molto complesso da realizzare e necessita di meccanismi speciali per le LAN
+
+## Routing Information Protocol
+
+Di tipo distance vector  
+La metrica è il numero di hop, 16 simboleggia infinity  
+Distanza amministrativa 120  
+Utilizza la porta UDP 520  
+Utilizza il load-balancing
+
+**Timer**:
+- **Update-timer** (30s)
+- **Invalid-timer** (180s): se il timer della destinazione scade per assenza di aggionamenti viene considerata possibly down e annunciata unreachable, ma viene ancora utilizzata per il forwarding
+- **Flush-timer** (240s): se il timer della destinazione scade viene eliminata
+- **Holddown-timer** (180s): indica per quanto tempo vengono ignorati gli aggiornamenti che indicano la raggiungibilità di una destinazione se
+  - è diventata invalid
+  - è stata annunciata unreachable
+
+### RIPv1
+
+Classful  
+Invia gli update in limited-broadcast (`255.255.255.255`)  
+Non supporta il subnetting a maschera variabile, il supernetting e le reti discontinue
+
+> Più subnet vengono considerate come una stessa rete major, nel caso queste avrebbero la stessa metria si applicherebbe il load-balancing e i pacchetti sarebbero instradati a caso
+
+### RIPv2
+
+Classless  
+Invia gli update in multicast (`224.0.0.9`)  
+Supporta subnetting a maschera variabile, il supernetting e le reti discontinue  
+E' sicuro perchè autentica i router con cui dialoga
+
+## Open Shortest Path First
+
+Di tipo link state  
+Classless  
+Distanza amministrativa 110  
+E' sicuro perchè autentica i router con cui dialoga  
+Invia i messaggi in multicast a AllSPFRouters (IPv4 `224.0.0.5`, IPv6 `ff02::5`, MAC `01-00-5E-00-00-05`) e AllDRRouters (IPv4 `224.0.0.6`, IPv6 `ff02::6`, MAC `01-00-5E-00-00-06`)
+Non usa il livello transport, ma pacchetti IP con campo protocol = 89
+
+**Database**:
+- **Delle adiacenze**: elenco dei router adiacenti con cui il router dialoga direttamente
+- **Dei link state**: topologia completa dell'area
+- **Delle rotte**: destinazioni da inserire nella routing table
+
+Funzionamento:
+- Instaura e aggiorna le adiacenze
+- Scambia Link State Advertisement, contenenti stato e costo di ogni interfaccia direttamente collegata, che vengono salvati e inoltrati da ogni router ai propri vicini
+- Costruisce e aggiorna il Link State DataBase con il proprio stato e con i LSA ricevuti
+- Esegue l'algoritmo Shortest Path First sul LSDB e genera i milgiori percorsi verso tutte le destinazioni note
+- Costruisce e aggiorna la tabella di routing
+
+Tipi di messaggi:
+- **Hello**: per scoprire quali router OSPF vicini sono raggiungibili e disponibili, inviato ogni 10-30s
+- **DB-Description**: per sincronizzare i database dei router vicini con la sola lista dei link nel LSDB
+- **LS-Request**: per richiedere specifici dati ai router
+- **LS-Update**: fatto da uno o più **LS-Advertisement** per rispondere ad un LSR o per inviare i suoi link state
+- **LS-Ack**: per confermare la consegna degli altri messaggi
+
+> Due router fanno adiacenza se:
+> - Hanno gli stessi timer Hello e Dead
+> - Sono nella stessa ara
+> - Hanno una rete che li collega allo stesso type e con la stessa netmask
