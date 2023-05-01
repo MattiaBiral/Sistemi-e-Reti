@@ -318,7 +318,22 @@ L'unico match è con `192.168.0.0/16` poichè applicando la netmask `/16` (`255.
 
 In entrambi i casi i pacchetti verranno inviati correttamente
 
+# Autonomous System
+
+E' una parte della rete Internet gestita da un'unica organizzazione, è identificato da un codice a 16 o 32bit chiamato ASNumber rilasciato da IANA
+
+Tipi di AS:
+- **Stub**: connesso ad un solo AS
+- **Multi-homed**: connesso a più AS, ma non è consentito utilizzarlo per raggiungere un altro AS
+- **Transit**: connesso a più AS anche con la funzione di tramite tra essi
+- **Internet eXchange Point**: di tipo transit, esclusivamente dedicato allo scambio di pacchetti tra AS
+
 # Algoritmi di routing
+
+### Classi di algoritmi:
+
+- **Interior Gateway Protocol**: scambiano le informazioni di routing all'interno di un singolo AS
+- **Exterior Gateway Protocol**: scambiano le informazioni di routing tra router di AS diversi
 
 ### Tipi di algoritmi:
 
@@ -459,3 +474,10 @@ Tipi di messaggi:
 > - Hanno gli stessi timer Hello e Dead
 > - Sono nella stessa ara
 > - Hanno una rete che li collega allo stesso type e con la stessa netmask
+
+## Border Gateway Protocol
+
+Protocollo di routing dinamico che verifica che i percorsi siano loop-free e attraversiono il minor numero di AS possibile  
+Normalmente utilizzato nei router che interconnettono gli AS tra loro (Border Router)  
+Ha lo scopo di publicizzare le reti che si trovano all'interno del proprio AS agli altri, in questo caso viene definito **eBGP** ed ha una distanza amministrativa di 20  
+Nel raro caso venga utilizzato come protocollo di routing interno ad un AS viene definito **iBGP** ed ha una distanza amministrativa di 200
