@@ -456,13 +456,6 @@ Non usa il livello transport, ma pacchetti IP con campo protocol = 89
 - **Dei link state**: topologia completa dell'area
 - **Delle rotte**: destinazioni da inserire nella routing table
 
-Funzionamento:
-- Instaura e aggiorna le adiacenze
-- Scambia Link State Advertisement, contenenti stato e costo di ogni interfaccia direttamente collegata, che vengono salvati e inoltrati da ogni router ai propri vicini
-- Costruisce e aggiorna il Link State DataBase con il proprio stato e con i LSA ricevuti
-- Esegue l'algoritmo Shortest Path First sul LSDB e genera i milgiori percorsi verso tutte le destinazioni note
-- Costruisce e aggiorna la tabella di routing
-
 Tipi di messaggi:
 - **Hello**: per scoprire quali router OSPF vicini sono raggiungibili e disponibili, inviato ogni 10-30s
 - **DB-Description**: per sincronizzare i database dei router vicini con la sola lista dei link nel LSDB
@@ -470,9 +463,18 @@ Tipi di messaggi:
 - **LS-Update**: fatto da uno o più **LS-Advertisement** per rispondere ad un LSR o per inviare i suoi link state
 - **LS-Ack**: per confermare la consegna degli altri messaggi
 
+Funzionamento:
+- Instaura e aggiorna le adiacenze tramite pacchetti di Hello
+- Scambia DBD ed eventuali LSR se ci sono rotte da aggiungere
+- Risponde adgli LSR con LSU composti da LSA, contenenti stato e costo di ogni interfaccia direttamente collegata, che vengono salvati e inoltrati da ogni router ai propri vicini
+- Conferma la ricezione dei pacchetti con LSAck
+- Costruisce e aggiorna il LSDB (ricostruzione della completa topologia della rete) con il proprio stato e con i LSA ricevuti
+- Esegue l'algoritmo Shortest Path First sul LSDB e genera i milgiori percorsi verso tutte le destinazioni note e li inserisce nel Forwarding DataBase
+- Costruisce e aggiorna la tabella di routing
+
 > Due router fanno adiacenza se:
 > - Hanno gli stessi timer Hello e Dead
-> - Sono nella stessa ara
+> - Sono nella stessa area
 > - Hanno una rete che li collega allo stesso type e con la stessa netmask
 
 ## Border Gateway Protocol
