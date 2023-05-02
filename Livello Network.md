@@ -433,7 +433,7 @@ Classful
 Invia gli update in limited-broadcast (`255.255.255.255`)  
 Non supporta il subnetting a maschera variabile, il supernetting e le reti discontinue
 
-> Più subnet vengono considerate come una stessa rete major, nel caso queste avrebbero la stessa metria si applicherebbe il load-balancing e i pacchetti sarebbero instradati a caso
+> Più subnet vengono considerate come una stessa rete major, nel caso queste avessero la stessa metrica si applicherebbe il load-balancing e i pacchetti sarebbero instradati a caso
 
 ### RIPv2
 
@@ -448,7 +448,7 @@ Di tipo link state
 Classless  
 Distanza amministrativa 110  
 E' sicuro perchè autentica i router con cui dialoga  
-Invia i messaggi in multicast a AllSPFRouters (IPv4 `224.0.0.5`, IPv6 `ff02::5`, MAC `01-00-5E-00-00-05`) e AllDRRouters (IPv4 `224.0.0.6`, IPv6 `ff02::6`, MAC `01-00-5E-00-00-06`)
+Invia i messaggi in multicast a AllSPFRouters (IPv4 `224.0.0.5`, IPv6 `ff02::5`, MAC `01-00-5E-00-00-05`) e AllDRRouters (IPv4 `224.0.0.6`, IPv6 `ff02::6`, MAC `01-00-5E-00-00-06`)  
 Non usa il livello transport, ma pacchetti IP con campo protocol = 89
 
 **Database**:
@@ -466,10 +466,10 @@ Tipi di messaggi:
 Funzionamento:
 - Instaura e aggiorna le adiacenze tramite pacchetti di Hello
 - Scambia DBD ed eventuali LSR se ci sono rotte da aggiungere
-- Risponde adgli LSR con LSU composti da LSA, contenenti stato e costo di ogni interfaccia direttamente collegata, che vengono salvati e inoltrati da ogni router ai propri vicini
+- Risponde ai LSR con LSU composti da LSA, contenenti stato e costo di ogni interfaccia direttamente collegata, che vengono salvati e inoltrati da ogni router ai propri vicini
 - Conferma la ricezione dei pacchetti con LSAck
-- Costruisce e aggiorna il LSDB (ricostruzione della completa topologia della rete) con il proprio stato e con i LSA ricevuti
-- Esegue l'algoritmo Shortest Path First sul LSDB e genera i milgiori percorsi verso tutte le destinazioni note e li inserisce nel Forwarding DataBase
+- Costruisce e aggiorna il LSDB (ricostruzione della topologia completa della rete) con il proprio stato e con i LSA ricevuti
+- Esegue l'algoritmo Shortest Path First sul LSDB e genera i migliori percorsi verso tutte le destinazioni note e li inserisce nel Forwarding DataBase
 - Costruisce e aggiorna la tabella di routing
 
 > Due router fanno adiacenza se:
@@ -479,7 +479,7 @@ Funzionamento:
 
 ## Border Gateway Protocol
 
-Protocollo di routing dinamico che verifica che i percorsi siano loop-free e attraversiono il minor numero di AS possibile  
+Protocollo di routing dinamico che verifica che i percorsi siano loop-free e attraversino il minor numero di AS possibile  
 Normalmente utilizzato nei router che interconnettono gli AS tra loro (Border Router)  
 Ha lo scopo di publicizzare le reti che si trovano all'interno del proprio AS agli altri, in questo caso viene definito **eBGP** ed ha una distanza amministrativa di 20  
 Nel raro caso venga utilizzato come protocollo di routing interno ad un AS viene definito **iBGP** ed ha una distanza amministrativa di 200
