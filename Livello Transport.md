@@ -43,7 +43,8 @@ Di conseguenza la lunghezza del datagramma viene calcolata da quella del pacchet
 
 Connesso e affidabile  
 Consegna tutti i byte e nell'ordine corretto, si parla di flusso di byte  
-Full-duplex, si può trasmettere e ricevere dati contemporaneamente, anche grazie alle due differenti sequenze di riscontro, viene considerata una coppia di comunicazioni umonodirezionali
+Full-duplex, si può trasmettere e ricevere dati contemporaneamente, anche grazie alle due differenti sequenze di riscontro, viene considerata una coppia di comunicazioni simplex  
+Supporta il controllo del flusso
 
 ## Datagram
 
@@ -65,6 +66,7 @@ Full-duplex, si può trasmettere e ricevere dati contemporaneamente, anche grazi
   - **Checksum**: codice di controllo del datagramma
   - **Urgent Pointer**: indica il numero dell'ultimo byte urgente nel campo **Data**
   - **Options**: da 0 a 10 32bit word
+    - **Selective Acknowledgement**: per indicare l'avvenuta di un range di datagrammi oltre a quelli confermati con l'Ack Number
 - **Data**: payload
 
 ## Retransmission Time Out
