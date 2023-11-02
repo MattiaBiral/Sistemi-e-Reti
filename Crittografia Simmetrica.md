@@ -94,8 +94,8 @@ Due tipologie di cifrari:
 
 Scorrimento fisso circolare dell'alfabeto  
 
-e<sub>k</sub>(p<sub>i</sub>) = C<sub>i</sub> = (p<sub>i</sub> + k) mod 26  
-d<sub>k</sub>(C<sub>i</sub>) = p<sub>i</sub> = (C<sub>i</sub> - k) mod 26
+<code>e<sub>k</sub>(p<sub>i</sub>) = C<sub>i</sub> = (p<sub>i</sub> + k) mod 26</code>  
+<code>d<sub>k</sub>(C<sub>i</sub>) = p<sub>i</sub> = (C<sub>i</sub> - k) mod 26</code>
 
 Solo `26` possibili chiavi
 
@@ -134,3 +134,40 @@ Per decifrare la procedura si applica al contrario
 Vantaggi:
 - Ogni lettera può essere cifrata in modi diversi a seconda del digramma
 - 25 x 24 possibili digrammi, attacco statistico più complesso
+
+### Cifrario a rotori
+
+Tecnica di cifratura polialfabetica che utilizza un certo numero di rotori, ciascuno dei quali collega casualmente 26 input con 26 output  
+La posizione dei rotori cambia ogni volta che viene cifrata una lettera  
+La sequenza di cifrari monoalfabetici si ripete solamente quando i rotori tornano alla posizione iniziale  
+La cifratura finale dipende dalla posizione iniziale dei rotori e dai rotori scelti
+
+La macchina Enigma:
+- Utilizza 3 rotori, in seguito 3 di 5
+- Ha un riflessore che fa si che si possa sia cifrare che decifrare nello stesso modo
+- Utilizza anche una plugboard, che effettua una permutazione ed applica così un ulteriore cifrario monoalfabetico sia prima che dopo la cifratura/decifratura
+
+### Cifrario di Vernam / One Time Pad
+
+Basato su quello di Vigenère con chiave:
+- di lunghezza almeno pari al testo in chiaro
+- casuale
+- non riutilizzata
+
+Applicato ai dati binari la tavola di vigenère diventa:
+
+`-|01`  
+`0|01`  
+`1|10`
+
+che corrisponde alla porta logica XOR:
+- `C = p ⊕ k`
+- `p = C ⊕ k`
+
+Infatti `C ⊕ k = p ⊕ k ⊕ k` ma `k ⊕ k = 0` e `p ⊕ 0 = p`
+
+Se la chiave viene riutilizzata lo XOR tra i testi in chiaro è uguale allo XOR tra i testi cifrati
+
+<code>C<sub>1</sub> ⊕ C<sub>2</sub> = p<sub>1</sub> ⊕ k ⊕ p<sub>2</sub> ⊕ k</code> ma `k ⊕ k = 0` e <code>p<sub>1</sub> ⊕ p<sub>2</sub> ⊕ 0 = p<sub>1</sub> ⊕ p<sub>2</sub></code>
+
+Debolezza: è malleabile, è possibile alterare il testo cifrato in modo che il destinatario trovi il testo in chiaro desiderato, dato che è possibile trovare la chiave avendo il testo in chiaro e il testo cifrato, ciò non è possibile in tutti i cifrari
