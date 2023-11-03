@@ -133,7 +133,7 @@ Per decifrare la procedura si applica al contrario
 
 Vantaggi:
 - Ogni lettera può essere cifrata in modi diversi a seconda del digramma
-- 25 x 24 possibili digrammi, attacco statistico più complesso
+- `25 x 24` possibili digrammi, attacco statistico più complesso
 
 ### Cifrario a rotori
 
@@ -156,9 +156,10 @@ Basato su quello di Vigenère con chiave:
 
 Applicato ai dati binari la tavola di vigenère diventa:
 
-`-|01`  
-`0|01`  
-`1|10`
+|         | `0` | `1` |
+|---------|-----|-----|
+| **`0`** | `0` | `1` |
+| **`1`** | `1` | `0` |
 
 che corrisponde alla porta logica XOR:
 - `C = p ⊕ k`
@@ -171,3 +172,64 @@ Se la chiave viene riutilizzata lo XOR tra i testi in chiaro è uguale allo XOR 
 <code>C<sub>1</sub> ⊕ C<sub>2</sub> = p<sub>1</sub> ⊕ k ⊕ p<sub>2</sub> ⊕ k</code> ma `k ⊕ k = 0` e <code>p<sub>1</sub> ⊕ p<sub>2</sub> ⊕ 0 = p<sub>1</sub> ⊕ p<sub>2</sub></code>
 
 Debolezza: è malleabile, è possibile alterare il testo cifrato in modo che il destinatario trovi il testo in chiaro desiderato, dato che è possibile trovare la chiave avendo il testo in chiaro e il testo cifrato, ciò non è possibile in tutti i cifrari
+
+### Cifrari a flusso basati su OTP
+
+I bit sono cifrati indipendentemente gli uni dagli altri  
+Le sequenze di bit generate sono pseudo-aleatorie da meccanismi deterministici a partire da un seed, è sufficiente che appaiano aleatorie da un punto di vista statistico
+
+Esempio di generatore pseudo-aleatorio: <code>X<sub>n</sub> = (aX<sub>n-1</sub> + c) mod m</code> dove <code>X<sub>0</sub></code>, `a` e `c` costituiscono il seed, mentre `m` è solitamente noto
+
+La chiave è quindi in realtà il seed, con il Pseudo-Random Generator genera la sequenza di bit che viene messa in XOR con il plaintext
+
+### Cifrari a blocchi
+
+Raggruppano i bit in blocchi di `k` bit che possono essere permutati in <code>2<sup>k</sup>!</code> modi possibili, la tabella di codifica è la chiave e deve essere biunivoca (o invertibile)
+
+### Confusione e diffusione
+
+Shannon in Communication Theory od Secrecy Systems afferma che un buon algoritmo di cifratura per essere robusto ad attacchi di tipo statistico deve possedere le seguenti caratteristiche:
+- **Confusione**: un attaccante non deve poter trovare la chiave anche avendo a disposizione un grande numero di coppie plaintext-cyphertext -> ongi bit del testo cifrato deve dipendere da tutti i bit della chiave
+- **Diffusione**: un attaccante non deve poter identificare "anomalie statistiche" che esistono nel testo in chiaro -> ogni bit modificato del testo in chiaro deve modificare il maggior numero di bit del testo cifrato in modo da non mostrare possibili pattern
+
+Queste due proprietà messe insieme sono conosciute come **Avanlanche Criterion** o **Effetto a Valanga**
+
+**Strict Avalanche Criterion**: se un bit del plaintext viene complementato allora ogni bit del cyphertext ha una probabilità del 50% di essere complementato
+
+### Substitution-Permutation Networks
+
+Algoritmi composti da sequenze di operazioni matematiche a cascata con lo scopo di massimizzare confusione e diffusione  
+Composte da **S-Box** e **P-Box** usati in maniera alternata e iterata più volte  
+Ogni iterazione si chiama **round** o **stadio**
+
+![SPN](./img/spn.png)
+
+Affinchè sia poi possibile decifrare, le S-Box devono essere invertibili, ovvero biunivoche
+
+### Reti di Feistel
+
+Casi speciali di SPN, dove la funzione F è una S-Box e lo scambio di R e L è una P-Box
+
+![Feistel](./img/feistel.png)
+
+La funzione F prende in input la sottochiave <code>K<sub>i</sub></code> e il semiblocco destro generando una specie di sottochiave che viene poi messa in XOR con il semiblocco sinistro, per questo non è necessario che sia invertibile e può essere anche molto complessa, infatti:  
+<code>R<sub>n-1</sub> = [L<sub>n</sub> ⊕ F(K<sub>n</sub>, R<sub>n</sub>)] ⊕ F(K<sub>n</sub>, R<sub>n</sub>) = L<sub>n</sub></code>  
+quindi ripetendo lo stesso procedimento con `i` da `n` a `0` si decripta il messaggio
+
+Per realizzare una rete di Feistel occorre scegliere:
+- Dimensione dei blocchi (spesso 64bit)
+- Dimensione della chiave (almeno 128bit)
+- Numero di round (tipicamente 16)
+- Algoritmo di generazione delle sottochiavi
+- La funzione di Feistel
+
+### Data Encryption Standard
+
+Sviluppato da Feistel, è una rete di Feistel con:
+- Blocchi da 64bit
+- Chiave di 64bit: 56bit + 8bit di checksum
+- Il generatore di sottochiavi ne genera una da 48bit per ogni round
+- Fase di permutazione iniziale e finale
+- 16 stadi
+
+![DES](./img/des.png)
