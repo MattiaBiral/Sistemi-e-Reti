@@ -233,3 +233,46 @@ Sviluppato da Feistel, è una rete di Feistel con:
 - 16 stadi
 
 ![DES](./img/des.png)
+
+### Triple DES
+
+Abbreviato TDES o 3DES migliora significativamente la sicurezza del DES ed è ritenuto ancora sicuro  
+Utilizza blocchi di 64bit, tre cifrature consecutive con tre chiavi di 56bit che corrispondono ad una chiave di 168bit
+
+**EEE Schema**:
+<code>C = DES(k<sub>3</sub>, DES(k<sub>2</sub>, DES(k<sub>1</sub>, p)))</code>  
+**EDE Schema** (standard):
+<code>C = DES(k<sub>3</sub>, DES<sup>-1</sup>(k<sub>2</sub>, DES(k<sub>1</sub>, p)))</code>
+
+![Triple DES](./img/triple_des.png)
+
+**Utilizzo delle chiavi**:
+- <code>k<sub>1</sub> ≠ k<sub>2</sub></code>, <code>k<sub>2</sub> ≠ k<sub>3</sub></code> e <code>k<sub>1</sub> ≠ k<sub>3</sub></code>: sicurezza di 168bit (56 x 3)
+- <code>k<sub>1</sub> = k<sub>3</sub> ≠ k<sub>2</sub></code>: sicurezza di 112bit (56 x 2)
+- <code>k<sub>1</sub> = k<sub>2</sub> = k<sub>3</sub></code>: sicurezza di 56bit, compatibile con il DES
+
+### Advanced Encryption Standard
+
+Basato su sostituzioni e permutazioni come le SPN, ma non è una rete di Feistel  
+Blocchi di 128bit, chiave da 128/192/256bit, 9/11/13 stadi  
+I blocchi di input vengono organizzati in 4x4byte
+
+Trasformazioni effettuate ad ogni stadio:
+- **Substitute Bytes**:  
+  ![Substitute Bytes](./img/aes_substitute_bytes.png)
+- **Shift Rows**:  
+  ![Shift Rows](./img/aes_shift_rows.png)
+- **Mix Columns**:  
+  ![Mix Columns](./img/aes_mix_columns.png)
+- **Add Round Key**:  
+  ![Add Round Key](./img/aes_add_round_key.png)
+
+Tranne Add Round Key, le trasformazioni per la decifratura sono diverse
+
+**Modalità operative**:
+- **Electronic CodeBook**: Ogni blocco viene cifrato in modo indipendente dagli altri, blocchi in chiaro uguali portano a blocchi cifrati uguali  
+  ![Electronic CodeBook](./img/aes_electronic_codebook.png)
+- **Cipher Block Chaining**: Ogni blocco prima di essere cifrato viene messo in XOR con il blocco cifrato precedente, per il primo viene utilizzato un Initialization Vector, cifratura sequenziale, decifratura parallela  
+  ![Cipher Block Chaining](./img/aes_cipher_block_chaining.png)
+- **Counter (CTR)**: Viene cifrata una composizione matematica di **nonce** e **counter** il cui risultato viene messo in XOR con il blocco in chiaro  
+  ![Counter](./img/aes_counter.png)
