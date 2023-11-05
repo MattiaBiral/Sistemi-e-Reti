@@ -12,7 +12,7 @@ Insieme di:
 - **Autenticità o Autenticazione**: verifica dell'identità del mittente e del destinatario tramite l'acquisizione di dati che identificano univocamente un soggetto:
   - Qualcosa che si sa: password
   - Qualcosa che si ha: badge
-  - QUalcosa che si è: impronta digitale
+  - Qualcosa che si è: impronta digitale
 - **Disponibilità** del servizio
 
 ## Crittografia
@@ -27,12 +27,12 @@ Permette di ottenere:
 
 ### Cifratura / Encryption
 
-Plain Text + Encryption Algorithm + Key = Cypher Text
+Plain Text + Encryption Algorithm + Key = Cypher Text  
 Testo in chiaro + Algoritmo di cifratura + Chiave = Testo cifrato
 
 ### Decifratura / Decryption
 
-Cypher Text + Encryption Algorithm + Key = Plain Text
+Cypher Text + Encryption Algorithm + Key = Plain Text  
 Testo cifrato + Algoritmo di cifratura + Chiave = Testo in chiaro
 
 ### Principio di Kerckhoffs
@@ -106,7 +106,7 @@ Ci sono `26!` possibili chiavi
 Attacco esaustivo praticamente impossibile  
 Con la crittoanalisi statistica delle ricorrenze si può decifrare facilmente
 
-> La crittoanalisi statistica analizza le frequenze con cui compaiono le lettere, in ogni lingua ogni lettara ha una frequenza caratteristica che non viene alterata dalla cifratura monoalfabetica
+> La crittoanalisi statistica analizza le frequenze con cui compaiono le lettere, in ogni lingua ogni lettera ha una frequenza caratteristica che non viene alterata dalla cifratura monoalfabetica
 
 ### Cifrario di Vigenère
 
@@ -154,7 +154,7 @@ Basato su quello di Vigenère con chiave:
 - casuale
 - non riutilizzata
 
-Applicato ai dati binari la tavola di vigenère diventa:
+Applicata ai dati binari la tavola di vigenère diventa:
 
 |         | `0` | `1` |
 |---------|-----|-----|
@@ -167,7 +167,7 @@ che corrisponde alla porta logica XOR:
 
 Infatti `C ⊕ k = p ⊕ k ⊕ k` ma `k ⊕ k = 0` e `p ⊕ 0 = p`
 
-Se la chiave viene riutilizzata lo XOR tra i testi in chiaro è uguale allo XOR tra i testi cifrati
+Se la chiave viene riutilizzata lo XOR tra i testi in chiaro è uguale allo XOR tra i testi cifrati:
 
 <code>C<sub>1</sub> ⊕ C<sub>2</sub> = p<sub>1</sub> ⊕ k ⊕ p<sub>2</sub> ⊕ k</code> ma `k ⊕ k = 0` e <code>p<sub>1</sub> ⊕ p<sub>2</sub> ⊕ 0 = p<sub>1</sub> ⊕ p<sub>2</sub></code>
 
@@ -180,7 +180,7 @@ Le sequenze di bit generate sono pseudo-aleatorie da meccanismi deterministici a
 
 Esempio di generatore pseudo-aleatorio: <code>X<sub>n</sub> = (aX<sub>n-1</sub> + c) mod m</code> dove <code>X<sub>0</sub></code>, `a` e `c` costituiscono il seed, mentre `m` è solitamente noto
 
-La chiave è quindi in realtà il seed, con il Pseudo-Random Generator genera la sequenza di bit che viene messa in XOR con il plaintext
+La chiave è quindi in realtà il seed, con il quale il Pseudo-Random Generator genera la sequenza di bit che viene messa in XOR con il plaintext
 
 ### Cifrari a blocchi
 
@@ -188,8 +188,8 @@ Raggruppano i bit in blocchi di `k` bit che possono essere permutati in <code>2<
 
 ### Confusione e diffusione
 
-Shannon in Communication Theory od Secrecy Systems afferma che un buon algoritmo di cifratura per essere robusto ad attacchi di tipo statistico deve possedere le seguenti caratteristiche:
-- **Confusione**: un attaccante non deve poter trovare la chiave anche avendo a disposizione un grande numero di coppie plaintext-cyphertext -> ongi bit del testo cifrato deve dipendere da tutti i bit della chiave
+Shannon in "Communication Theory od Secrecy Systems" afferma che un buon algoritmo di cifratura per essere robusto ad attacchi di tipo statistico deve possedere le seguenti caratteristiche:
+- **Confusione**: un attaccante non deve poter trovare la chiave anche avendo a disposizione un grande numero di coppie plaintext-cyphertext -> ogni bit del testo cifrato deve dipendere da tutti i bit della chiave
 - **Diffusione**: un attaccante non deve poter identificare "anomalie statistiche" che esistono nel testo in chiaro -> ogni bit modificato del testo in chiaro deve modificare il maggior numero di bit del testo cifrato in modo da non mostrare possibili pattern
 
 Queste due proprietà messe insieme sono conosciute come **Avanlanche Criterion** o **Effetto a Valanga**
