@@ -78,3 +78,38 @@ Due componenti:
 - `(n, d)` costituisce la chiave privata
 
 E' impossibile riuscire a derivare una chiave conoscendo l'altra, in quanto sarebbe necessario fattorizzare il modulo per poter calcolare il toziente
+
+> ### Metodo di Euclide esteso
+>
+> Tabella iniziale:  
+> | `φ(n)` | `a` (0) | - |
+> |--------|---------|---|
+> | `e`    | `b` (1) | - |
+>
+> Si calcola il quoziente `c` ed il resto `r` della divisione `φ(n) / e`:
+> | `φ(n)` | `a` (0)           | -   |
+> |--------|-------------------|-----|
+> | `e`    | `b` (1)           | `c` |
+> | `r`    | `d = a - (b * c)` | -   |
+>
+> Si prosegue scendendo con le righe fino a quando `r` diventa 1, ottendendo l'esponente privato `d` (a cui va sommato il toziente se negativo)
+
+### Cifratura e decifratura
+
+Dato `p`, con `0 < p < n`:
+- **Cifratura**: <code>C = p<sup>e</sup> mod n</code>
+- **Decifratura**: <code>p = C<sup>d</sup> mod n</code>
+
+## Crittografia ibrida
+
+Crittografia simmetrica:
+- Vantaggi: velocità
+- Svantaggi: la chiave deve essere scambiata in modo sicuro
+
+Crittografia asimmetrica:
+- Vantaggi: non richiede lo scambio sicuro della chiave, permette anche la firma di un messaggio
+- Svantaggi: richiede calcoli di elevamento a potenza con numeri molto grandi, che impatta sulla velocità
+
+**Crittografia ibrida**:
+- Viene utilizzata la crittografia asimmetrica per scambiare in modo sicuro una chiave (chiamata di sessione se diversa per ogni sessione)
+- I messaggi sono cifrati con algoritmi a chiave simmetrica, utilizzando la chiave precedentemente scambiata
