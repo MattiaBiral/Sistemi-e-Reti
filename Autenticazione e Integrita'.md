@@ -50,3 +50,38 @@ Per questo motivo è anche possibile un attacco Man-in-the-middle con l'autentic
 Sarebbe pertanto necessario un meccanismo di **distribuzione sicura delle chiavi**:
 - Chiave simmetrica: intermediario di fiducia, **Key Distribution Center**
 - Chiave asimmetrica: **Certification Authority** che garantisca l'autenticità delle chiavi pubbliche
+
+## Key Distribution Center
+
+Funzionamento:
+- Un utente si registra presso il KDC
+- L'utente ottiene una chiave per comunicare con il KDC
+- Il KDC fornisce chiavi di sessione
+
+Nel caso in cui Alice voglia comunicare con Bob:
+- A -> KDC: <code>K<sub>A-KDC</sub>("Alice", "Bob")</code>
+- KDC -> A: <code>K<sub>A-KDC</sub>(R)</code>, <code>K<sub>B-KDC</sub>("Alice", R)</code>
+- A -> B: <code>K<sub>B-KDC</sub>("Alice", R)</code>
+- B -> A: `R(...)`
+
+## Certification Authority
+
+E' un ente terzo che garantisce la corrispondenza soggetto <-> chiave pubblica  
+Dopo aver verificato l'identità del soggetto la CA rilascia un certificato che lo lega alla sua chiave pubblica, il certificato è firmato dalla CA
+
+Compiti fondamentali:
+- Identificare il firmatario
+- Garantire l'unicità delle firme
+- Mantenere un registro dei possessori delle chiavi
+- Gestire la scadenza e revocazione delle chiavi
+
+### Certificato digitale
+
+Contiene:
+- I dati del soggetto
+- Numero di serie del certificato
+- Periodo di validità del certificato
+- Nome e firma digitale della CA emittente
+- Periodo di validità della chiave pubblica
+- Chiave pubblica del possessore
+- Opzionalmente l'indirizzo web ed il nome della compagnia proprietaria del server
