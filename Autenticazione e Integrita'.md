@@ -85,3 +85,55 @@ Contiene:
 - Periodo di validità della chiave pubblica
 - Chiave pubblica del possessore
 - Opzionalmente l'indirizzo web ed il nome della compagnia proprietaria del server
+
+## Integrità
+
+Un messaggio integro non è stato modificato da terzi  
+La segretezza comporta integrità
+
+Problema della crittografia asimmetrica: tempi di cifratura e decifratura troppo lunghi  
+Soluzione: **cifratura del digest, risultato di una funzione di hash**
+
+Quindi si invia insieme al messaggio il digest cifrato con la chiave privata del mittente, il destinatario riceve il messaggio, calcola il digest e lo confronta con quello ricevuto, decifrandolo con la chiave pubblica del mittente
+
+**Questo costituisce una firma digitale**
+
+### Funzioni crittografiche di hash
+
+Sono funzioni matematiche che restituiscono un output di lunghezza fisso univoco  
+Sono irreversibili, non è possibile ricostruire `p` da `H(p)`  
+E' possibile che due input restituiscano lo **stesso output**, tuttavia questi due input saranno **estremamente diversi** fra loro, anche in lunghezza, si dice che **i due input collidono**
+
+Un attacco ad una funzione di hash consiste nel trovare due input che producono lo stesso digest, si può rendere la funzione più sicura aumentando la lunghezza del digest
+
+## Firma digitale
+
+Caratteristiche di una firma:
+- Autenticità (identifica il firmatario)
+- Integrità (non falsificabile)
+- Non riutilizzabilità
+- Immodificabilità
+- Vincolante
+
+La firma digitale è un protocollo crittografico, generalmente basato su algoritmi a chiave asimmetrica, constituito da due parti fondamentali:
+- **Procedura di firma**: `sign(p)`
+- **Procedura di verifica**: `verify(sign(p))`
+
+Tale protocollo costituisce una firma poiché possiede le seguenti caratteristiche:
+- Autenticità (la chiave privata è conosciuta solo dal firmatario)
+- Integrità (chiunque può verificarla)
+- Non riutilizzabilità (è legata al contenuto del documento)
+- Immodificabilità (se il documento viene modificato la firma non è più valida)
+- E' vincolante (non può essere ripudiata)
+
+La sicurezza di una firma digitale è di gran lunga superiore di quella manuale, ed è definita **firma forte**
+
+Viene solitamente creata mediante un dispositivo con elevate caratteristiche di sicurezza
+
+## Firma elettronica
+
+E' realizzabile attraverso vari strumenti, tra cui:
+- Scansione della firma autografa
+- Password o PIN
+- Tecniche biometriche
+- Firma digitale
