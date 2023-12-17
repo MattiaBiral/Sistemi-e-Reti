@@ -137,3 +137,97 @@ E' realizzabile attraverso vari strumenti, tra cui:
 - Password o PIN
 - Tecniche biometriche
 - Firma digitale
+
+## Modelli fiduciari e PKI
+
+La verifica delle firme avviene utilizzando le chiavi pubbliche dei firmatari, ma:
+- Dove si trovano?
+- Chi garantisce l'identità del firmatario e l'associazione con la chiave?
+- Se la chiave viene violata, cosa succede?
+
+Per la gestione di questi problemi vengono definite delle policy di sicurezza che determinano:
+- Come vengono generate le coppie di chiavi
+- Dove vengono salvate
+- Quanto tempo sono valide
+- Cosa succede se una chiave è compromessa
+- ...
+
+### Direct Trust
+
+Il soggetto stesso certifica l'autenticità della sua chiave pubblica
+
+Vantaggi:
+- Non è necessaria alcuna infrastruttura
+
+Svantaggi:
+- Occorre consegnare la chiave ai singoli soggetti
+- Non è possibile il non ripudio di una firma
+- Manca un'ente che applichi una policy di sicurezza
+
+### Web of Trust
+
+Il soggetto fa firmare il suo certificato da altri soggetti e viceversa
+
+Vantaggi:
+- Basta un'infrastruttura minima
+
+Svantaggi:
+- Bloccare una chiave è difficile
+- Il non ripudio di una firma è possibile ma giuridicamente discutibile
+- Una policy di sicurezza è difficilmente applicabile
+
+### Hierarchical Trust (Public Key Infrastructure)
+
+Prevede un ente al vertice di una gerarchia di **Certification Authority** (CA radice):
+- La CA radice firma i certificati delle altre CA
+- Ogni CA emette e firma certificati
+- Se un soggetto si fida della CA radice si fida della sua firma, quindi anche della CA sottoposta e di tutti i certificati da lei firmati
+- Un certificato si verifica risalendo tutte le firme fino alla CA radice
+
+Vantaggi:
+- L'unica chiave che deve essere nota è quella della CA radice, che serve a verificare tutti i certificati
+- E' molto facile bloccare una chiave compromessa
+- Una firma non può essere ripudiata
+- Viene applicata una policy di sicurezza definita dalla CA radice e tutte le CA sottoposte applicano policy concordate con la CA radice che firma i loro certificati
+
+Svantaggi:
+- E' necessaria la creazione e la gestione di un'infrastruttura complessa
+- Ogni partecipante deve registrarsi presso una CA per ottenere un certificato
+- Ogni CA deve diffondere le chiavi pubbliche, gestire le chiavi bloccate, ...
+
+PKI:
+- insieme di processi e componenti teconologici
+- che permettonol'impiego sicuro di sistemi di crittografia asimmetrica e dei relativi protocolli crittografici
+- con l'uso del modello fiduciario gerarchico
+
+Componenti:
+- **Certification Authority**: crea certificati, deve operare in ambienti molto sicuri
+- **Registration Authority**: può essere anche fisicamente separata dalla CA, identifica e registra i soggetti
+- **Validation Authority**: verifica un certificato e ne conferma la validità
+
+Componenti ulteriori:
+- Local Registration Authority
+- Revocation Authoriy
+- Personal Security Environment
+
+## Standard X.509
+
+Definisce:
+- Il formato dei certificati a chiave pubblica
+- Il funzionamento delle CA
+
+E' uno degli standard più importanti e ampiamente diffusi
+
+![X.509](./img/x.509.png)
+
+## Marca temporale
+
+E' un riferimento temporale opponibile a terzi, è un'ulteriore firma digitale apposta ad un documento associata ad una data e ora
+
+E' un servizio che consiste in una firma digitale apposta da una Time Stamping Authority (solitamente una CA) al documento + data e ora sincronizzate con l'INRIM
+
+Vantaggi:
+- Praticità
+- Risparmio economico e di tempo
+- Validità legale
+- Validità europea
