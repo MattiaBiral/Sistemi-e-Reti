@@ -91,3 +91,50 @@ Interrogazione (`www.google.com`):
   - **Class**
   - **Time To Live**
   - **Value**
+
+# File Transfer Protocol
+
+## Server Ports
+
+**Control**: TCP 21  
+**Data**: TCP 20
+
+## Modes
+
+### Normal
+
+- Client Control -> Server Control: \<Data Port\>
+- Server Control -> Client Control: OK
+- Server Data -> Client Data: Data Channel
+- Client Data -> Server Data: OK
+
+### Passive
+
+- Client Control -> Server Control: Passive
+- Server Control -> Client Control: OK, \<Data Port\>
+- Client Data -> Server Data: Data Channel
+- Server Data -> Client Data: OK
+
+A causa del NAT/PAT la normal mode non funziona, deve essere il client ad aprire le connessioni, perciò si utilizza la passive mode
+
+## Commands
+
+- **USER \<username\>**: comunica il nome utente
+- **PASS \<password>**: comunica la password
+- **LIST [filename/directory]**: fornisce informazioni sul file se specificato, altrimenti lista i contenuti della cartella corrente o di quella specificata
+- **RETR \<filename\>**: riceve una copia del file
+- **STOR \<filename\>**: invia un file al server
+- **CWD \<directory\>**: cambia la working directory
+- **QUIT**: disconnette
+
+## Reply Codes
+
+- `2..`: il comando ha avuto successo
+- `4..` o `5..`: il comando è fallito
+- `1..` o `3..`: errore o risposta incompleta
+- `.0.`: sintassi
+- `.1.`: informazione
+- `.2.`: connessione
+- `.3.`: autenticazione
+- `.4.`: non definito
+- `.5.`: filesystem
