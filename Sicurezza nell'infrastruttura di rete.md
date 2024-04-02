@@ -74,10 +74,28 @@ Authentication Header:
 
 ## Encapsulation Security Payload
 
-| IP Header   | ESP Header | Payload (TCP/UDP) | ESP Trailer | ESP Authentication |
-| ----------- | ---------- | ----------------- | ----------- | ------------------ |
-| Protocol 50 |            <td colspan="2">Ecnrypted</td>    | MAC                |
-|             <td colspan="3">Authenticated</td>             |                    |
+<table>
+  <thead>
+    <tr>
+      <th>IP Header</th>
+      <th>ESP Header</th>
+      <th>Payload (TCP/UDP)</th>
+      <th>ESP Trailer</th>
+      <th>ESP Authentication</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2">Protocol 50</td>
+      <td></td>
+      <td colspan="2">Encrypted</td>
+      <td rowspan="2">MAC</td>
+    </tr>
+    <tr>
+      <td colspan="3">Authenticated</td>
+    </tr>
+  </tbody>
+</table>
 
 ESP Header:
 - **Security Parameter Index**
