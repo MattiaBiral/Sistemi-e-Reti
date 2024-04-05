@@ -113,3 +113,69 @@ ESP Authentication
 
 | New IP Header | ESP Header | IP Header | Payload (TCP/UDP) | ESP Trailer | ESP Authentication |
 | ------------- | ---------- | --------- | ----------------- | ----------- | -------------- |
+
+# Secure Socket Layer/Transport Layer Security
+
+Utilizza TCP aggiungendo riservatezza e integrità dei dati e autenticazione di client e server  
+Può essere utilizzato da qualsiasi applicazione che usa TCP  
+Fornisce un'API che forniscono l'interfaccia socket SSL allo sviluppatore
+
+**SSL**: originariamente proposto da Netscape
+
+**TLS**: basato su SSL e standardizzato
+
+Il browser contiene una lista di CA fidate, autentica il server prima dell'invio di dati  
+E' possibile anche l'autenticazione del client
+
+Le informazioni scambiate all'interno di una sessione SSL/TLS sono cifrate con algoritmi a chiave simmetrica, le chiavi simmetriche sono scambiate tramite la crittografia a chiave pubblica
+
+## Handshake
+
+- Client -> Server: SYN
+- Server -> Client: SYN + ACK
+- Client -> Server: ACK, SSL Hello
+- Server -> Client: Certificate, Key Length, Algorithms, Nonce
+- Client -> Server: E<sub>S</sub>(PMS)
+
+Client e server concordano gli algoritmi da utilizzare nella fase di handshake:
+- Nell'Hello il client specifica una **lista di algoritmi** supportati
+- Il server ne sceglie **uno a chiave simmetrica e uno a chiave pubblica** e lo comunica insiame al **certificato** (che contiene la sua chiave pubblica per l'algoritmo scelto), alla **lunghezza della chiave** e ad un **nonce**
+- Il client **verifica il certificato**, estrae la chiave pubblica del server e genera un **Pre Master Secret**, lo cifra con la chiave pubblica del server e lo invia
+- Client e server derivano il **Master Secret** dal PMS e dal nonce scelto dal server e lo usano per **generare le due chiavi di cifratura e i due Message Authentication Code** (uno per direzione di comunicazione)
+- Client e server calcolano l'hash di tutti i messaggi della fase di handshake e inviano il MAC per verificare che non siano avvenute manomissioni
+
+## Derivazione delle chiavi
+
+Dal Master Secret vengono derivati:
+- K<sub>S</sub>: chiave di sessione per cifrare il traffico dal server al client
+- M<sub>S</sub>: Message Authentication Code per autenticare il traffico dal server al client
+- K<sub>C</sub>: chiave di sessione per cifrare il traffico dal client al server
+- M<sub>C</sub>: Message Authentication Code per autenticare il traffico dal client al server
+
+## Record
+
+Il flusso di dati viene suddiviso in Record, che sono numerati (il numero di sequenza non è incluso nel record), autenticati e poi cifrati
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Version</th>
+      <th>Length</th>
+      <th>Payload</th>
+      <th>HMAC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Indica se il record è di handshake, dati applicativi o chiusione della connessione SSL/TLS</td>
+      <td></td>
+      <td></td>
+      <td colspan="2">Encrypted</td>
+    </tr>
+    <tr>
+      <td colspan="4">Authenticated</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
