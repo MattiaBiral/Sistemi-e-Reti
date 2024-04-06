@@ -179,3 +179,69 @@ Il flusso di dati viene suddiviso in Record, che sono numerati (il numero di seq
     </tr>
   </tbody>
 </table>
+
+# Firewall
+
+Combinazione di hardware e software che permette di separare una rete privata dall'esterno e consente di controllare e gestire il flusso del traffico con l'esterno  
+Se non è progettato o installato correttamente può essere violato  
+Processo attivo su un sistema in grado di controllare il contenuto dei pacchetti al fine di bloccare il traffico non autorizzato  
+Collega una rete **trust** (amministrata) ad una considerata non sicura  
+
+- **Personal Firewall**: sofware eseguito su un'host che controlla il traffico sulla scheda di rete di un singolo computer
+- **Perimeter Firewall**: software eseguito su router di frontiera, che hanno accesso alla rete pubblica
+- **Hardware Firewall**: costituiti da un apparato hardware apposito, può anche svolgere la funzione di router
+- **Application-layer Firewall**: firewall perimetrali applicativi di livello 7 che vengono eseguiti su un server con più interfacce di rete e con applicazioni di rete specifiche per il controllo delle connessioni e l'ottimizzazione del traffico (proxy)
+
+## Filtraggio di pacchetto
+
+Analizza l'header di livello 3 e 4 di ciascun pacchetto in modo indipendente  
+Blocca o lascia transitare i pacchetti in base alle regole definite  
+Disponibile anche sulla maggior parte dei router in commercio  
+Non consente l'autenticazione degli utenti
+
+Regole generalmente basate su:
+- Indirizzo IP sorgente e destinatario
+- Protocollo
+- Porte sorgente e destinazione
+- Flag TCP
+- Tipo di messaggio ICMP
+- Regole diverse in entrata e in uscita
+- Regole diverse per le diverse interfaccie del router
+
+## Filtraggio con memoria di stato
+
+**Stateful inspection**
+
+Effettua un'analisi in tempo reale dello stato dei flussi, registrando l'inizio e la fine di ogni connessione  
+Intercetta violazioni dei parametri di protocollo  
+Ispeziona anche i dati a livello applicativo
+
+## Intrusioni
+
+- **IP Spoofing**: il firewall dovrebbe bloccare pacchetti con indirizzi privati da e verso una rete pubblica
+- **Denial of Service**
+- **IP Smurfing**: il firewall dovrebbe bloccare ICMP Echo Request con destinazione broadcast
+- **Traceroute**: il firewall dovrebbe bloccare tutti i messaggi ICMP di tipo Destination Unreachable
+
+# Application Gateway
+
+Specifico server attraverso cui tutti i dati delle applicazioni sono vincolati a passare, applica politiche in base ai dati applicativi  
+Collega due segmenti di rete operando a livello applicativo  
+Permette l'autenticazione degli utenti  
+Maschera l'origine del colleamento operando come procuratore, **proxy**  
+Il filtraggio dovrebbe bloccare tutti i collegamenti tranne quelli con l'indirizzo dell' AG come IP destinazione
+
+## Policy di accesso
+
+Possono essere:
+- Fascie orarie
+- IP black list
+- Keyword list
+- Tipo di dati scambiati
+- Personalizzate per utenti o gruppi
+
+# DeMilitarized Zone
+
+Zona smilitarizzata  
+Porzione di rete che si trova tra la rete protetta e Internet  
+I servizi accessibili dall'esterno vengono collocati in DMZ, i server che li hostano sono detti **bastion host**, sono gli unici visibili ed attaccabili, poiche la rete interna è protetta da un ulteriore firewall
