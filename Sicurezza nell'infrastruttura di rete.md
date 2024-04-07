@@ -14,7 +14,7 @@ Due modelli:
 ## Overlay
 
 Solo i router di frontiera sono a conoscenza dell'esistenza della VPN e devono essere configurati  
-Realizzazione tramite tunneling: quando un router do frontiera riceve un pacchetto di livello 3 dall'interno lo imbusta in un altro pacchetto di livello 3 con destinatario un'altro router di frontiera che estrarrà il pacchetto contenuto
+Realizzazione tramite tunneling: quando un router di frontiera riceve un pacchetto di livello 3 dall'interno lo imbusta in un altro pacchetto di livello 3 con destinatario un'altro router di frontiera che estrarrà il pacchetto contenuto
 
 Problemi:
 - **Overhead**
@@ -118,7 +118,7 @@ ESP Authentication
 
 Utilizza TCP aggiungendo riservatezza e integrità dei dati e autenticazione di client e server  
 Può essere utilizzato da qualsiasi applicazione che usa TCP  
-Fornisce un'API che forniscono l'interfaccia socket SSL allo sviluppatore
+Fornisce un'API che mette a disposizione l'interfaccia socket SSL/TLS allo sviluppatore
 
 **SSL**: originariamente proposto da Netscape
 
@@ -189,8 +189,17 @@ Collega una rete **trust** (amministrata) ad una considerata non sicura
 
 - **Personal Firewall**: sofware eseguito su un'host che controlla il traffico sulla scheda di rete di un singolo computer
 - **Perimeter Firewall**: software eseguito su router di frontiera, che hanno accesso alla rete pubblica
-- **Hardware Firewall**: costituiti da un apparato hardware apposito, può anche svolgere la funzione di router
-- **Application-layer Firewall**: firewall perimetrali applicativi di livello 7 che vengono eseguiti su un server con più interfacce di rete e con applicazioni di rete specifiche per il controllo delle connessioni e l'ottimizzazione del traffico (proxy)
+- **Hardware Firewall**: costituito da un apparato hardware apposito, può anche svolgere la funzione di router
+- **Application-layer Firewall**: firewall perimetrale applicativo di livello 7 che viene eseguito eseguiti su un server con più interfacce di rete e con applicazioni di rete specifiche per il controllo delle connessioni e l'ottimizzazione del traffico (proxy)
+
+> ### Extranet
+>
+> Insieme di servizi di rete per clienti e fornitori basati su Internet  
+> Più intranet distribuite su più siti collegati tra loro mediante Internet  
+> Permette a operatori esterni di accedere alle risorse elaborative dell'azienda, quali:
+> - Database interni
+> - Software amministrativi e gestionali
+> - Sistemi per e-commerce
 
 ## Filtraggio di pacchetto
 
@@ -221,7 +230,7 @@ Ispeziona anche i dati a livello applicativo
 - **IP Spoofing**: il firewall dovrebbe bloccare pacchetti con indirizzi privati da e verso una rete pubblica
 - **Denial of Service**
 - **IP Smurfing**: il firewall dovrebbe bloccare ICMP Echo Request con destinazione broadcast
-- **Traceroute**: il firewall dovrebbe bloccare tutti i messaggi ICMP di tipo Destination Unreachable
+- **Traceroute**: il firewall dovrebbe bloccare tutti i messaggi ICMP di tipo Time Exceeded
 
 # Application Gateway
 
@@ -235,8 +244,8 @@ Il filtraggio dovrebbe bloccare tutti i collegamenti tranne quelli con l'indiriz
 
 Possono essere:
 - Fascie orarie
-- IP black list
-- Keyword list
+- IP blacklist/whitelist
+- Keyword blacklist/whitelist
 - Tipo di dati scambiati
 - Personalizzate per utenti o gruppi
 
@@ -244,4 +253,4 @@ Possono essere:
 
 Zona smilitarizzata  
 Porzione di rete che si trova tra la rete protetta e Internet  
-I servizi accessibili dall'esterno vengono collocati in DMZ, i server che li hostano sono detti **bastion host**, sono gli unici visibili ed attaccabili, poiche la rete interna è protetta da un ulteriore firewall
+I servizi accessibili dall'esterno vengono collocati in DMZ, i server che li hostano sono detti **bastion host**, sono gli unici visibili ed attaccabili, poiché la rete interna è protetta da un ulteriore firewall
